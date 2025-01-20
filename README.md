@@ -1,5 +1,5 @@
 # ripple_effect
-Surfacing public companies affected by news
+Surfacing public companies affected by news.
 
 ## Getting Started
 ### Step 1
