@@ -39,6 +39,23 @@ services:
           path: ./ripple-effect-api/app
           target: /app
 
+  web:
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: ./dockerfiles/Dockerfile.web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    volumes:
+      - ./ripple-effect-web:/app
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./ripple-effect-web
+          target: /app
+
 volumes:
   postgres_data:
 
