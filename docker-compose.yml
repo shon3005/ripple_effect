@@ -31,6 +31,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./ripple-effect-api/app:/app
+    develop:
+      watch:
+        - action: sync+restart
+          path: ./ripple-effect-api/app
+          target: /app
 
 volumes:
   postgres_data:
