@@ -1,2 +1,4 @@
 /ripple-effect-web/node_modules
 /ripple-effect-web/.next
+.DS_Store
+/ripple-effect-api/app/__pycache__

@@ -2,11 +2,24 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Company
+from fastapi.middleware.cors import CORSMiddleware
+
+origins = [
+    "http://host.docker.internal:3000",
+]
 
 # Initialize the database
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Dependency to get the database session
 def get_db():
@@ -18,6 +31,7 @@ def get_db():
 
 @app.get("/")
 def read_root():
+    print("hello world")
     return {"message": "Welcome to the company tracker API!"}
 
 @app.post("/companies/")
