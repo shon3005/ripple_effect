@@ -31,7 +31,6 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    print("hello world")
     return {"message": "Welcome to the company tracker API!"}
 
 @app.post("/companies/")
