@@ -2,3 +2,4 @@
 /ripple-effect-web/.next
 .DS_Store
 /ripple-effect-api/app/__pycache__
+.env

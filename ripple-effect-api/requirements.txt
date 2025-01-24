@@ -4,3 +4,4 @@ sqlalchemy
 starlette
 pydantic
 fastapi
+openai

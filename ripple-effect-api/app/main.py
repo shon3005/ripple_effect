@@ -1,8 +1,10 @@
+import os
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 from database import Base, engine, SessionLocal
 from models import Company
 from fastapi.middleware.cors import CORSMiddleware
+from openai import OpenAI
 
 origins = [
     "http://host.docker.internal:3000",
@@ -12,6 +14,9 @@ origins = [
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+openai_api_key = os.environ["OPENAI_API_KEY"]
+client = OpenAI(api_key=openai_api_key)
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,7 +36,17 @@ def get_db():
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the company tracker API!"}
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            # {"role": "system", "content": "You are a helpful assistant."},
+            {
+                "role": "user",
+                "content": "Fetch me the latest news headlines from google."
+            }
+        ]
+    )
+    return {"message": completion.choices[0].message}
 
 @app.post("/companies/")
 def create_company(name: str, industry: str, description: str, db: Session = Depends(get_db)):
