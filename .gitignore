@@ -2,4 +2,7 @@
 /ripple-effect-web/.next
 .DS_Store
 /ripple-effect-api/app/__pycache__
+/ripple-effect-api/pyrightconfig.json
 .env
+.ipynb_checkpoints
+api_testing.ipynb

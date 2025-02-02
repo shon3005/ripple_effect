@@ -5,3 +5,4 @@ starlette
 pydantic
 fastapi
 openai
+yfinance
