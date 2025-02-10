@@ -1,15 +1,18 @@
-// This is a server component (no "use client" directive is present)
+'use client';
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { createPrompt } from "@/actions/createPrompt";
+import { useActionState } from "react";
+import { Loader2 } from "lucide-react";
 
 export default function UserInputForm() {
+	const [error, action, isPending] = useActionState(createPrompt, null);
 	return (
 		<section className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
 			<form
-				action="/api/upload" // Your API route to handle the submission
-				method="POST"
-				encType="multipart/form-data"
+				action={action}
 				className="space-y-6"
 			>
 				{/* Message Input and File Upload (inline) */}
@@ -25,13 +28,17 @@ export default function UserInputForm() {
 							type="text"
 							placeholder="Type your message here..."
 							className="flex-1"
+							disabled={isPending}
 						/>
 
 						{/* File Upload styled as a button */}
-						<Button asChild>
-							<label htmlFor="file" className="cursor-pointer">
-								Upload File
-							</label>
+						<Button disabled={isPending}>
+							{isPending ?
+								<Loader2 className="animate-spin" /> :
+								<label htmlFor="file" className="cursor-pointer">
+									Upload File
+								</label>
+							}
 						</Button>
 						{/* Hidden file input */}
 						<input id="file" name="file" type="file" className="hidden" />
@@ -39,9 +46,11 @@ export default function UserInputForm() {
 				</div>
 
 				{/* Submit button */}
-				<Button type="submit" className="w-full">
+				<Button type="submit" disabled={isPending} className="w-full">
 					Submit
 				</Button>
+				{isPending && <p>Loading...</p>}
+				{error && <p>{error}</p>}
 			</form>
 		</section>
 	);
