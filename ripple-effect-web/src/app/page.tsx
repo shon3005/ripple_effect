@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { Suspense } from "react";
-import Message from "../components/Message";
+// import Message from "../components/Message";
+import NetworkGraph from "@/components/NetworkGraph";
+import InputForm from "@/components/InputForm";
 
 export default async function Home() {
   return (
@@ -15,8 +17,9 @@ export default async function Home() {
           priority
         />
         <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <Suspense>
-            <Message />
+          <InputForm />
+          <Suspense fallback="Loading...">
+            <NetworkGraph />
           </Suspense>
         </ol>
 
