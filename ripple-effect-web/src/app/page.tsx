@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { Suspense } from "react";
-// import Message from "../components/Message";
+import Message from "../components/Message";
 import NetworkGraph from "@/components/NetworkGraph";
 import InputForm from "@/components/InputForm";
+import CompletionContextProvider from "@/contexts/completion-context";
 
 export default async function Home() {
   return (
@@ -16,13 +17,17 @@ export default async function Home() {
           height={38}
           priority
         />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <InputForm />
-          <Suspense fallback="Loading...">
-            <NetworkGraph />
-          </Suspense>
-        </ol>
-
+        <CompletionContextProvider>
+          <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
+            <InputForm />
+            <Suspense>
+              <Message />
+            </Suspense>
+            <Suspense>
+              <NetworkGraph />
+            </Suspense>
+          </ol>
+        </CompletionContextProvider>
         <div className="flex gap-4 items-center flex-col sm:flex-row">
           <a
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
