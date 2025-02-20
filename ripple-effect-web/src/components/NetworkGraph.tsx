@@ -28,7 +28,6 @@ const NetworkGraph: React.FC = () => {
 
 	useEffect(() => {
 		try {
-			console.log(JSON.parse(graphCompletion));
 			// Assign JSON to network elements
 			const nodes: Node[] = JSON.parse(graphCompletion).nodes;
 			const links: Edge[] = JSON.parse(graphCompletion).edges;
@@ -155,16 +154,16 @@ const NetworkGraph: React.FC = () => {
 			simulation.on('tick', () => {
 				// Update link positions
 				link
-					.attr('x1', (d) => (d.source as Node).x!)
-					.attr('y1', (d) => (d.source as Node).y!)
-					.attr('x2', (d) => (d.target as Node).x!)
-					.attr('y2', (d) => (d.target as Node).y!);
+					?.attr('x1', (d) => (d.source as Node).x!)
+					?.attr('y1', (d) => (d.source as Node).y!)
+					?.attr('x2', (d) => (d.target as Node).x!)
+					?.attr('y2', (d) => (d.target as Node).y!);
 
 				// Update node positions
-				node.attr('cx', (d) => d.x!).attr('cy', (d) => d.y!);
+				node?.attr('cx', (d) => d.x!)?.attr('cy', (d) => d.y!);
 
 				// Update label positions
-				label.attr('x', (d) => d.x!).attr('y', (d) => d.y!);
+				label?.attr('x', (d) => d.x!)?.attr('y', (d) => d.y!);
 			});
 
 			// Cleanup: stop simulation on component unmount
