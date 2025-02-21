@@ -2,18 +2,19 @@ import json
 import os
 
 from enum import Enum
-from typing import List
-from fastapi import FastAPI, Depends
+from typing import List, Self
+
+from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
 
-from sqlalchemy.orm import Session
 from pydantic import BaseModel, model_validator
 
-from database import Base, engine, SessionLocal
-from models import Company
-
 from openai import OpenAI
+
+from database import Base, engine, SessionLocal
+
+# TODO: implement type checking to all functions
 
 origins = [
     "http://host.docker.internal:3000",
@@ -50,14 +51,13 @@ async def generate_json_stream(stream):
     for event in stream:
         if event.type == "content.delta":
             if event.parsed is not None:
-                # Print the parsed data as JSON
-                print("content.delta parsed:", event.parsed)
                 yield json.dumps(event.parsed)
         elif event.type == "content.done":
             print("content.done")
         elif event.type == "error":
             print("Error in stream:", event.error)
 
+# TODO: put into models folder
 class Message(BaseModel):
     message: str
 
@@ -82,22 +82,21 @@ class GraphModel(BaseModel):
     edges: List[Edge]
 
     @model_validator(mode="after")
-    def check_edges(cls, instance: "GraphModel") -> "GraphModel":
-        node_ids = {node.id for node in instance.nodes}
-        for edge in instance.edges:
+    def check_edges(self: Self) -> Self:
+        node_ids = {node.id for node in self.nodes}
+        for edge in self.edges:
             if edge.source not in node_ids:
                 raise ValueError(f"Edge source {edge.source} does not exist among the nodes")
             if edge.target not in node_ids:
                 raise ValueError(f"Edge target {edge.target} does not exist among the nodes")
-        return instance
+        return self
 
-# TODO: refactor parameters into a model
 @app.post("/")
 async def read_root(
     message: Message
 ):
     # Prepare the messages and function description
-    messages = [
+    messages: List = [
         {
             "role": "system",
             "content": (
@@ -132,15 +131,4 @@ async def read_root(
         stream_generator(),
         media_type="application/json",
     )
-
-@app.post("/companies/")
-def create_company(name: str, industry: str, description: str, db: Session = Depends(get_db)):
-    '''
-    This is a dummy endpoint just to remind me what a post request looks like
-    '''
-    new_company = Company(name=name, industry=industry, description=description)
-    db.add(new_company)
-    db.commit()
-    db.refresh(new_company)
-    return new_company
 

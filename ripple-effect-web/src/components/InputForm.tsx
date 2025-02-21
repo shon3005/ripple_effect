@@ -1,30 +1,29 @@
-'use client';
+"use client";
+
+import React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createPrompt } from "@/actions/createPrompt";
-// import { useEffect, useActionState } from "react";
-import React from "react";
+
 import { useCompletionContext } from "@/contexts/completion-context";
-// import { Loader2 } from "lucide-react";
 
 export default function UserInputForm() {
 	const { setCompletion, setGraphCompletion, } = useCompletionContext();
-	// const [output, action, isPending] = useActionState(createPrompt, null);
+
 	async function fetchCompletion(e: React.FormEvent<HTMLFormElement>) {
 		e.preventDefault();
-		// TODO: ensure we refactor urls into config, determine whether client or server url
-		// const { reader } = await createPrompt(e.target[0].value);
+		const form = e.target as HTMLFormElement;
+		const input = form.elements[0] as HTMLInputElement;
+		// TODO: ensure we refactor urls into config, create client side action
 
 		// this is a client component to show incremental loading progress to the user
-		// if this was a server component, the component would have to wait for all the data to load before sending it to the client
 		const response = await fetch("http://localhost:8000", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
 			},
-			body: JSON.stringify({ message: e.target[0].value }),
+			body: JSON.stringify({ message: input.value }),
 		})
 		if (!response.body) {
 			return;
@@ -84,8 +83,6 @@ export default function UserInputForm() {
 				<Button type="submit" className="w-full">
 					Submit
 				</Button>
-				{/* {isPending && <p>Loading...</p>} */}
-				{/* {error && <p>{error}</p>} */}
 			</form>
 		</section>
 	);

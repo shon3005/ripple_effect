@@ -1,8 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { getErrorMessage } from "@/utils/getErrorMessage";
 
-// TODO: figure out how to resolve type error with _previousState
 export async function createPrompt(message: string) {
   try {
     const response = await fetch("http://host.docker.internal:8000/", {
@@ -17,9 +16,9 @@ export async function createPrompt(message: string) {
     }
     const reader = response.body.getReader();
     return { reader };
-    // TODO: figure out how to resolve unknown type error with e
   } catch (e: unknown) {
-    console.log(e.message);
+    return {
+      error: getErrorMessage(e),
+    };
   }
-  revalidatePath("/");
 }
